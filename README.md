@@ -2,6 +2,12 @@
 
 An interactive Tic-Tac-Toe game built with Python and Streamlit that demonstrates adversarial search, Minimax decision-making, Alpha-Beta Pruning, and algorithm performance analysis.
 
+## 🚀 Live Demo
+
+**Play Tic-Tac-Toe AI Lab here:** [Launch the App](https://tictactoe-ai-lab-mwke7xnmgdnebaipguanjp.streamlit.app/)
+
+Try different difficulty levels and explore how Minimax and Alpha-Beta Pruning power the AI.
+
 ## Features
 
 - **Three difficulty levels:** Easy, Medium, and Unbeatable.
