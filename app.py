@@ -14,6 +14,7 @@ from ai.engine import (
     make_move,
     winner,
     is_draw,
+    best_move,
     best_move_alphabeta,
     medium_move,
     explain_move,
@@ -48,6 +49,7 @@ defaults = {
     "game_over": False,
     "message": "Your move. Place X on the board.",
     "difficulty": "Unbeatable",
+    "algorithm": "Alpha-Beta Pruning",
     "ai_explanation": "",
     "benchmark_results": None,
     "human_wins": 0,
@@ -96,11 +98,14 @@ def ai_turn():
         return
 
     difficulty = st.session_state.difficulty
+    algorithm = st.session_state.algorithm
 
     if difficulty == "Easy":
         move = random.choice(moves)
     elif difficulty == "Medium":
         move = medium_move(board)
+    elif algorithm == "Minimax":
+        move = best_move(board)
     else:
         move = best_move_alphabeta(board)
 
@@ -162,6 +167,16 @@ with st.sidebar:
         "Unbeatable": "Minimax with Alpha-Beta Pruning.",
     }
     st.caption(difficulty_descriptions[st.session_state.difficulty])
+
+    st.selectbox(
+        "SEARCH ALGORITHM",
+        ["Minimax", "Alpha-Beta Pruning"],
+        key="algorithm",
+        help="Choose the search algorithm used in Unbeatable difficulty. Easy remains random and Medium uses depth-limited Minimax.",
+    )
+    st.caption(
+        "Minimax explores all relevant states; Alpha-Beta Pruning skips branches that cannot improve the decision. Both are optimal in Unbeatable mode."
+    )
 
     st.markdown("---")
     st.markdown("**PLAYER CONFIGURATION**")
@@ -285,8 +300,13 @@ with insight_col:
     st.markdown("### 🧠 AI Intelligence")
     st.caption("DECISION SUPPORT / MOVE ANALYSIS")
 
+    active_algorithm = (
+        st.session_state.algorithm
+        if st.session_state.difficulty == "Unbeatable"
+        else ("Random Moves" if st.session_state.difficulty == "Easy" else "Depth-Limited Minimax")
+    )
     st.markdown(
-        """
+        f"""
         <div style="
             border:1px solid rgba(0,229,255,0.25);
             background:linear-gradient(
@@ -301,7 +321,7 @@ with insight_col:
             <div style="
                 font-size:20px;color:#f4f2ff;font-weight:800;
                 margin:8px 0;
-            ">Adversarial Search</div>
+            ">{active_algorithm}</div>
             <div style="color:#9ba9c5;font-size:13px;">
                 Evaluating moves, anticipating your response,
                 and choosing a strategy.
@@ -322,7 +342,8 @@ with insight_col:
         """
         - **Easy:** Random legal move.
         - **Medium:** Limited-depth Minimax with a heuristic.
-        - **Unbeatable:** Minimax with Alpha-Beta Pruning.
+        - **Unbeatable + Minimax:** Full Minimax search.
+        - **Unbeatable + Alpha-Beta Pruning:** Full search with branch pruning.
         """
     )
 
